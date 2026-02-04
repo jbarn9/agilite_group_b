@@ -1,0 +1,6 @@
+# JS Dependencies
+node_modules
+
+# Local mock DB
+datas/
+!datas/.gitkeep
