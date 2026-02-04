@@ -23,3 +23,22 @@ const server = http.createServer((req, res) => {
 server.listen(3000, () => {
   console.log('Serveur lancé sur http://localhost:3000');
 });
+
+//Partie US3: edit product
+const API_URL = "http://localhost:3000/products";
+
+// Récupérer un produit spécifique pour pré-remplir le formulaire
+export const getProductById = async (id) => {
+    const res = await fetch(`${API_URL}/${id}`);
+    return await res.json();
+};
+
+// Envoyer les modifications au serveur (PUT)
+export const updateProduct = async (id, productData) => {
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+    });
+    return await res.json();
+};
