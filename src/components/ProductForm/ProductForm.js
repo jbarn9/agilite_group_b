@@ -1,55 +1,24 @@
-/**
- * ProductForm Component
- * Handles product creation and editing with real-time validation
- * 
- * @module components/ProductForm
- * @requires ../models/Product
- * 
- * @example
- * // Create a form for adding products
- * const form = new ProductForm(container, async (data, isEdit) => {
- *   if (isEdit) {
- *     await updateProduct(data);
- *   } else {
- *     await createProduct(data);
- *   }
- * });
- * form.render(); // Display create mode
- * 
- * @example
- * // Create a form for editing a product
- * form.render(existingProduct); // Display edit mode
- */
-
 export class ProductForm {
-    /**
-     * Create a ProductForm instance
-     * 
-     * @constructor
-     * @param {HTMLElement} container - DOM container element where form will be rendered
-     * @param {Function} onSubmit - Callback function invoked when form is submitted
-     * @param {Object} onSubmit.data - Form data object containing product information
-     * @param {string} onSubmit.data.name - Product name
-     * @param {number} onSubmit.data.price - Product price
-     * @param {string} onSubmit.data.description - Product description
-     * @param {number} onSubmit.data.stock - Product stock quantity
-     * @param {boolean} onSubmit.isEdit - True if editing existing product, false for creation
-     * @throws {Error} If container is not a valid DOM element
-     * 
-     * @example
-     * const container = document.getElementById('form-container');
-     * const form = new ProductForm(container, handleSubmit);
-     */
+
     #productService;
     #formElement;
     #onProductAdded;
 
-    constructor(productService, onProductAdded) {  // ← Ordre des paramètres
+    /**
+     * Creates a new ProductForm instance
+     * @param {Object} productService - Service for managing product operations
+     * @param {Function} onProductAdded - Callback function triggered when a product is successfully added
+     */
+    constructor(productService, onProductAdded) {
         this.#productService = productService;
         this.#onProductAdded = onProductAdded;
         this.#createForm();
     }
 
+    /**
+     * Creates and configures the form element with its HTML structure and event listeners
+     * @private
+     */
     #createForm() {
         this.#formElement = document.createElement('form');
         this.#formElement.className = 'product-form';
@@ -69,18 +38,15 @@ export class ProductForm {
     }
 
     /**
-     * Handle form submission
-     * Validates all fields and calls onSubmit callback if valid
-     * Disables submit button during processing to prevent double submission
-     * 
-     * @async
+     * Handles form submission: prevents default behavior, creates a product object,
+     * saves it via the product service, and displays a notification
      * @private
-     * @returns {Promise<void>}
-     * @throws {Error} If form validation fails or submission callback throws
+     * @param {Event} event - The form submit event
      */
     async #handleSubmit(event) {
         event.preventDefault();
         
+        // Extract form data
         const formData = new FormData(event.target);
         const product = {
             id: crypto.randomUUID(),
@@ -88,10 +54,11 @@ export class ProductForm {
         };
 
         try {
+            // Add product through the service
             await this.#productService.add(product);
             this.#formElement.reset();
             
-            // Notifier que le produit a été ajouté
+            // Notify that the product has been added
             if (this.#onProductAdded) {
                 this.#onProductAdded(product);
             }
@@ -103,6 +70,12 @@ export class ProductForm {
         }
     }
 
+    /**
+     * Displays a temporary notification message
+     * @private
+     * @param {string} message - The message to display
+     * @param {string} type - The notification type ('success' or 'error')
+     */
     #showNotification(message, type) {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
@@ -111,24 +84,13 @@ export class ProductForm {
         const container = document.getElementById('notification-container');
         container.appendChild(notification);
         
+        // Auto-remove notification after 3 seconds
         setTimeout(() => notification.remove(), 3000);
     }
 
     /**
-     * Render the product form
-     * Displays either creation form (empty) or edit form (pre-filled with product data)
-     * 
-     * @param {Product|null} product - Product instance to edit, or null for create mode
-     * @returns {void}
-     * 
-     * @example
-     * // Render form in create mode
-     * form.render();
-     * 
-     * @example
-     * // Render form in edit mode
-     * const product = new Product(1, "Laptop", 999.99, "Description", 10);
-     * form.render(product);
+     * Renders the form by appending it to the specified container element
+     * @param {HTMLElement} container - The DOM element where the form will be rendered
      */
     render(container) {
         container.appendChild(this.#formElement);
