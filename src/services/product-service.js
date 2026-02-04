@@ -1,5 +1,3 @@
-import { HTTPClient } from './http-client.js';
-
 export class ProductService {
     #httpClient;
     #endpoint = '/collection';
@@ -8,11 +6,11 @@ export class ProductService {
         this.#httpClient = httpClient;
     }
 
-    async getAll() {
+    async getAllProducts() {
         return this.#httpClient.get(this.#endpoint);
     }
 
-    async getOne(productId) {
+    async getProductById(productId) {
         try {
             const response = await this.#httpClient.get(`${this.#endpoint}/${productId}`);
             return response;
@@ -22,7 +20,7 @@ export class ProductService {
         }
     }
 
-    async add(product) {
+    async createProduct(product) {
         return this.#httpClient.post(this.#endpoint, product);
     }
 
@@ -36,7 +34,7 @@ export class ProductService {
         }
     }
 
-    async update(product) {
+    async updateProduct(product) {
         try {
             const response = await this.#httpClient.put(`${this.#endpoint}/${product.id}`, product);
             return response;
@@ -47,18 +45,3 @@ export class ProductService {
     }
 }
 
-//essayer de communiquer avec le backend
-const httpClient = new HTTPClient();
-const productService = new ProductService(httpClient); 
-
-const program = async () => {
-    await productService.getAll();
-    await productService.getOne('eaf3');
-    await productService.add({id: 'fcf9', name: 'Added Product' });
-    await productService.deleteProduct('fcf9');
-
-    console.log('Product service operations completed.');
-    console.table(await productService.getAll());
-};
-
-program()

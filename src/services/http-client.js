@@ -82,22 +82,22 @@ export class HTTPClient {
     }
 }
 
-//essayer de communiquer avec le backend
-const httpClient = new HTTPClient();
+// //essayer de communiquer avec le backend
+// const httpClient = new HTTPClient();
 
-const consumer = async () => {
-    // const response = await httpClient.get('collection');
-    // console.log(`Response status: ${response.status}`);
-    // const payload = await response.json();
-    // console.table(payload);
+// const consumer = async () => {
+//     // const response = await httpClient.get('collection');
+//     // console.log(`Response status: ${response.status}`);
+//     // const payload = await response.json();
+//     // console.table(payload);
 
-    try {
-        const payload = await httpClient.get('collection');
-        console.table(payload);
-    } catch (error) {
-        console.error(`${error.status} - ${error.response.statusText}`);
-    }
-}
+//     try {
+//         const payload = await httpClient.get('collection');
+//         console.table(payload);
+//     } catch (error) {
+//         console.error(`${error.status} - ${error.response.statusText}`);
+//     }
+// }
 
-// Call the function
-// consumer();
+// // Call the function
+// // consumer();
