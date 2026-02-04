@@ -7,30 +7,35 @@
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/variables.css">
     <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="components/ProductForm/ProductForm.css">
 </head>
 <body>
-    <!-- Container principal -->
     <div id="app">
         <header class="header">
             <h1>Product Management</h1>
         </header>
         
+        <!-- Bandeau avec boutons d'actions -->
+        <nav class="action-bar">
+            <button id="btn-add" class="btn-action btn-add">
+                <span>➕</span> Ajouter
+            </button>
+            <button id="btn-edit" class="btn-action btn-edit">
+                <span>✏️</span> Modifier
+            </button>
+            <button id="btn-delete" class="btn-action btn-delete">
+                <span>🗑️</span> Supprimer
+            </button>
+        </nav>
+
         <main class="main-content">
-            
-            <!-- Zone pour la liste des produits -->
-            <section id="products-container">
-                
-            </section>
+            <section id="products-container"></section>
         </main>
         
-        <!-- Zone pour les notifications -->
         <div id="notification-container"></div>
-        
-        <!-- Zone pour les modales -->
         <div id="modal-container"></div>
     </div>
 
-    <!-- Scripts -->
     <script type="module" src="main.js"></script>
 </body>
 </html>
