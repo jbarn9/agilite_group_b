@@ -1,3 +1,5 @@
+import { HTTPClient } from './http-client.js';
+
 export class ProductService {
     #httpClient;
     #endpoint = '/collection';
@@ -6,11 +8,11 @@ export class ProductService {
         this.#httpClient = httpClient;
     }
 
-    async getAllProducts() {
+    async getAll() {
         return this.#httpClient.get(this.#endpoint);
     }
 
-    async getProductById(productId) {
+    async getOne(productId) {
         try {
             const response = await this.#httpClient.get(`${this.#endpoint}/${productId}`);
             return response;
@@ -20,7 +22,7 @@ export class ProductService {
         }
     }
 
-    async createProduct(product) {
+    async add(product) {
         return this.#httpClient.post(this.#endpoint, product);
     }
 
@@ -34,7 +36,7 @@ export class ProductService {
         }
     }
 
-    async updateProduct(product) {
+    async update(product) {
         try {
             const response = await this.#httpClient.put(`${this.#endpoint}/${product.id}`, product);
             return response;
@@ -44,4 +46,3 @@ export class ProductService {
         }   
     }
 }
-
