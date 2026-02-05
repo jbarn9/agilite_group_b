@@ -1,7 +1,7 @@
 // import { ProductForm } from './components/ProductForm/ProductForm.js';
 import { ProductService } from './services/product-service.js';
 import { HTTPClient } from './services/http-client.js';
-import { ProductController } from './components/ProductList/ProductList.js'
+import { ProductController } from './components/ProductList/ProductList.js';
 /**
  * Classe principale de l'application
  */
@@ -26,9 +26,9 @@ class App {
 
     
     init() {
+       
         this.#productList = new ProductController();
         const products = this.#productList.index();
-        this.#container = document.getElementById('product-container');
         this.#productList.render(products);       
     }
     /**
