@@ -2,6 +2,8 @@
 import { ProductService } from './services/product-service.js';
 import { HTTPClient } from './services/http-client.js';
 import { ProductController } from './components/ProductList/ProductList.js';
+import { ProductForm } from './components/ProductForm/ProductForm.js';
+
 /**
  * Classe principale de l'application
  */
@@ -16,53 +18,84 @@ class App {
     #productList;
 
     #container;
-    /**
-     * Initialise l'application avec ses dépendances
-     */
+    #formContainer
+
     constructor() {
         this.#productService = new ProductService(new HTTPClient());
         this.init();
     }
     
-    init() {       
+    async init() {       
         this.#productList = new ProductController();
-        const products = this.#productList.index();
-        this.#productList.render(products);       
+        await this.#productList.index();
+        // Créer le formulaire (caché par défaut)
+        this.#productForm = new ProductForm(this.#productService);
+        this.#hideAddForm()        
+        // Gérer les boutons d'action
+        this.#setupActionButtons();
     }
-    /**
-     * Configure le formulaire et charge les produits
-     * @returns {void}
-     */
-    displayForm(){
-         // Je crée le formulaire avec un callback pour rafraîchir la liste après ajout
-        this.#productForm = new ProductForm(this.#productService, (product) => {
-            console.log('Produit ajouté:', product);
-            this.#refreshProductList();
+
+
+    #setupActionButtons() {
+        // Bouton Ajouter
+        const btnAdd = document.getElementById('btn-add');
+        btnAdd.addEventListener('click', () => {              
+            // Rendre le formulaire
+            this.#formContainer = document.getElementById('products-container');
+            this.#productForm.render(this.#formContainer);    
+            this.#toggleAddForm();   
         });
 
-        // Je rends le formulaire dans le conteneur
-        this.#container = document.getElementById('modal-container');
-        // this.#productForm.render(container);
+        // Bouton Modifier
+        const btnEdit = document.getElementById('btn-edit');
+        btnEdit.addEventListener('click', () => {
+            this.#showNotification('Fonctionnalité "Modifier" à venir', 'info');
+        });
 
-        // // Je charge la liste initiale des produits
-        // this.#refreshProductList();
+        // Bouton Supprimer
+        const btnDelete = document.getElementById('btn-delete');
+        btnDelete.addEventListener('click', () => {
+            this.#showNotification('Fonctionnalité "Supprimer" à venir', 'info');
+        });
     }
 
-    /**
-     * Récupère et affiche la liste des produits
-     * @returns {Promise<void>}
-     */
+    #toggleAddForm() {        
+        const formElement = document.querySelector('.product-form');
+        if (formElement) {
+            formElement.classList.toggle('visible');
+        }
+    }
+
+    #hideAddForm() {
+        const formElement = document.querySelector('.product-form');
+        if (formElement) {
+            formElement.classList.remove('visible');
+        }
+    }
+
+    #showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        const container = document.getElementById('notification-container');
+        container.appendChild(notification);
+        
+        setTimeout(() => notification.remove(), 3000);
+    }
+
     async #refreshProductList() {
-        try {
-            const products = await this.#productService.getAll();
-            console.table(products);
+        try {            
+            this.#productList = new ProductController();
+            this.#productList.index();
+            // Ici vous pourrez afficher la liste des produits plus tard
         } catch (error) {
             console.error('Erreur lors du chargement des produits:', error);
         }
     }
 }
 
-// Je démarre l'application au chargement du DOM
+// Démarrer l'application
 document.addEventListener('DOMContentLoaded', () => {
     new App();
 });

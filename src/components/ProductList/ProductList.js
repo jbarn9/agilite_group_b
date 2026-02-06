@@ -4,14 +4,18 @@ import { ProductService } from '../../services/product-service.js';
  * Contrôleur gérant les opérations CRUD des produits
  */
 export class ProductController {
+    #httpClient;
+    #productService;
+    #gridApi; 
     /**
      * Initialise le contrôleur avec ses dépendances
      */
     constructor() {
         /** @type {HTTPClient} */
-        this.httpClient = new HTTPClient();
+        this.#httpClient = new HTTPClient();
         /** @type {ProductService} */
-        this.productService = new ProductService(this.httpClient);
+        this.#productService = new ProductService(this.#httpClient);
+        this.#gridApi = null;
     }
 
     /**
@@ -19,7 +23,7 @@ export class ProductController {
      * @returns {Promise<void>}
      */
     async index() {
-        const products = await this.productService.getAll();   
+        const products = await this.#productService.getAll(); 
         this.render(products);
     }
 
@@ -28,13 +32,18 @@ export class ProductController {
      * @param {Array<{id: string, name: string}>} items - Liste des produits
      * @returns {void}
      */
-    render(items) {
-         // rowData doit être défini AVANT gridOptions
+    render(items) {   
+        // rowData doit être défini AVANT gridOptions
         const rowData = items.map(item => ({
             id: item.id,
             name: item.name,
             selected: false
         }));
+        
+        if (this.#gridApi) {
+            this.#gridApi.setGridOption('rowData', rowData);
+            return;
+        }     
 
         const defaultColDef = {
             editable: true,
@@ -56,6 +65,11 @@ export class ProductController {
             defaultColDef
         };
 
-        agGrid.createGrid(document.querySelector('#myGrid'), gridOptions);
+        this.#gridApi = agGrid.createGrid(
+            document.querySelector('#myGrid'), 
+            gridOptions
+        );
+
+        return this.#gridApi;
     }
 }
