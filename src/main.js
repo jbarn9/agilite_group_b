@@ -23,10 +23,8 @@ class App {
         this.#productService = new ProductService(new HTTPClient());
         this.init();
     }
-
     
-    init() {
-       
+    init() {       
         this.#productList = new ProductController();
         const products = this.#productList.index();
         this.#productList.render(products);       
